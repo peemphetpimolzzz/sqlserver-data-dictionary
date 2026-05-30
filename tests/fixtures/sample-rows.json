@@ -1,0 +1,28 @@
+{
+  "tables": [
+    { "schema": "SalesLT", "name": "Customer", "objectId": 1 },
+    { "schema": "SalesLT", "name": "Address", "objectId": 2 }
+  ],
+  "columns": [
+    { "objectId": 1, "columnId": 1, "name": "CustomerID", "typeName": "int", "maxLength": 4, "precision": 10, "scale": 0, "isNullable": false, "isIdentity": true, "isComputed": false },
+    { "objectId": 1, "columnId": 2, "name": "FirstName", "typeName": "nvarchar", "maxLength": 100, "precision": 0, "scale": 0, "isNullable": false, "isIdentity": false, "isComputed": false },
+    { "objectId": 1, "columnId": 3, "name": "Notes", "typeName": "nvarchar", "maxLength": -1, "precision": 0, "scale": 0, "isNullable": true, "isIdentity": false, "isComputed": false },
+    { "objectId": 1, "columnId": 4, "name": "AddressID", "typeName": "int", "maxLength": 4, "precision": 10, "scale": 0, "isNullable": true, "isIdentity": false, "isComputed": false },
+    { "objectId": 2, "columnId": 1, "name": "AddressID", "typeName": "int", "maxLength": 4, "precision": 10, "scale": 0, "isNullable": false, "isIdentity": true, "isComputed": false },
+    { "objectId": 2, "columnId": 2, "name": "Balance", "typeName": "decimal", "maxLength": 9, "precision": 18, "scale": 2, "isNullable": true, "isIdentity": false, "isComputed": false }
+  ],
+  "defaults": [
+    { "objectId": 1, "columnId": 2, "definition": "(N'')" }
+  ],
+  "primaryKeys": [
+    { "objectId": 1, "columnId": 1 },
+    { "objectId": 2, "columnId": 1 }
+  ],
+  "foreignKeys": [
+    { "objectId": 1, "columnId": 4, "refSchema": "SalesLT", "refTable": "Address", "refColumn": "AddressID", "constraintName": "FK_Customer_Address" }
+  ],
+  "extendedProperties": [
+    { "majorId": 1, "minorId": 0, "value": "Customer records" },
+    { "majorId": 1, "minorId": 2, "value": "Given name" }
+  ]
+}

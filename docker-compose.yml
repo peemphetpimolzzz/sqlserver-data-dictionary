@@ -1,0 +1,44 @@
+name: sqlserver-data-dictionary
+
+services:
+  sqlserver:
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_PID: Developer
+      DB_NAME: ${DB_NAME:-AdventureWorksLT}
+    ports:
+      # Host port only for optional external inspection; the generator uses sqlserver:1433
+      # internally. Defaults off 1433 to avoid clashing with a local SQL Server.
+      - "${DB_PORT:-14330}:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    # Healthy only once the sample database has finished restoring and is online,
+    # so dependants never race the restore.
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -h -1 -Q \"SET NOCOUNT ON; SELECT COUNT(*) FROM sys.databases WHERE name='AdventureWorksLT' AND state=0\" | grep -q 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+
+  generator:
+    build: .
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      DB_HOST: sqlserver
+      DB_PORT: "1433"
+      DB_USER: sa
+      DB_PASSWORD: ${MSSQL_SA_PASSWORD}
+      DB_NAME: ${DB_NAME:-AdventureWorksLT}
+      OUTPUT_PATH: /app/output/AdventureWorksLT-data-dictionary.xlsx
+    volumes:
+      - ./output:/app/output
+
+volumes:
+  mssql-data:
