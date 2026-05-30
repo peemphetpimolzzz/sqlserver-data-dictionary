@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image and run unit tests
+        run: |
+          docker build -t data-dictionary:ci .
+          docker run --rm data-dictionary:ci npm run typecheck
+          docker run --rm data-dictionary:ci npm run test:unit
+
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run integration tests against the dockerized sample database
+        run: |
+          cp .env.example .env
+          docker compose up -d --build sqlserver
+          for i in $(seq 1 40); do
+            status=$(docker inspect --format '{{.State.Health.Status}}' "$(docker compose ps -q sqlserver)" 2>/dev/null || echo starting)
+            echo "sqlserver health ($i): $status"
+            [ "$status" = "healthy" ] && break
+            sleep 5
+          done
+          docker compose run --rm generator npm run test:integration
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
