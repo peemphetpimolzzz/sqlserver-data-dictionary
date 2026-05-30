@@ -8,8 +8,10 @@ properties. Markdown output is available too.
 The repository ships with the public **AdventureWorksLT** sample database, restored
 automatically, so `docker compose up` produces a real dictionary with zero setup.
 
-![CI](https://github.com/peem/sqlserver-data-dictionary/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/peemphetpimolzzz/sqlserver-data-dictionary/actions/workflows/ci.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
+
+![Data dictionary](docs/screenshots/overview.png)
 
 ## What it captures
 
@@ -23,7 +25,7 @@ automatically, so `docker compose up` produces a real dictionary with zero setup
 > Prerequisites: **Docker and git only.**
 
 ```bash
-git clone https://github.com/peem/sqlserver-data-dictionary.git
+git clone https://github.com/peemphetpimolzzz/sqlserver-data-dictionary.git
 cd sqlserver-data-dictionary
 cp .env.example .env
 docker compose up --build
