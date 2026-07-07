@@ -113,6 +113,17 @@ az storage file download \
   soft-delete is on, so after `az group delete` you must purge the vault before
   re-deploying within the retention window: `az keyvault purge --name <kvName>`.
 
+## Known limitations
+
+This is a portfolio template optimised for a one-command deploy, so one production concern
+is deliberately traded for simplicity:
+
+- **Azure SQL is on the public endpoint** with the "Allow Azure services" firewall rule, so
+  the admin password is the only network barrier. The job only needs the Azure-internal
+  Container Apps Job to reach SQL — in production, put the environment on a VNet, reach SQL
+  through a **Private Endpoint** + private DNS zone, drop the `AllowAllAzureIps` rule, and
+  set `publicNetworkAccess: 'Disabled'`.
+
 ## Teardown
 
 ```bash
