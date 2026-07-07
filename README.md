@@ -59,6 +59,19 @@ docker compose run --rm generator node dist/index.js --format markdown
 | `--output` | `OUTPUT_PATH` | `output/data-dictionary.xlsx` |
 | `--format` | `OUTPUT_FORMAT` | `excel` |
 
+## Deploy to Azure
+
+Because it is a batch tool, it runs in the cloud as an **Azure Container Apps Job** (manual
+trigger) rather than a service. Infrastructure is defined as Bicep in [`infra/`](infra/):
+the job reads an **Azure SQL Database** and writes the Excel dictionary to an **Azure Files**
+share, so the artifact survives the run. The [`Deploy (Azure)`](.github/workflows/deploy.yml)
+workflow builds the image in ACR and attaches it to the job — authenticating with **OIDC
+federated credentials**, so no long-lived cloud secret is stored in the repo. The SQL
+password lives in **Key Vault**.
+
+See [`docs/deployment.md`](docs/deployment.md) for the full walkthrough (provisioning,
+running the job, and downloading the output).
+
 ## How it works
 
 ```
