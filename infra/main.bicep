@@ -141,6 +141,12 @@ resource sqlServer 'Microsoft.Sql/servers@2023-08-01' = {
   }
 }
 
+// Known limitation (demo simplicity): the "Allow Azure services" catch-all makes
+// the server reachable from any Azure tenant, guarded only by the SQL admin
+// password. The job only needs the (Azure-internal) Container Apps Job to reach
+// SQL — a production deployment would use a VNet + Private Endpoint + private DNS
+// zone, drop this rule, and set publicNetworkAccess: 'Disabled'.
+// See docs/deployment.md → "Known limitations".
 resource sqlAllowAzure 'Microsoft.Sql/servers/firewallRules@2023-08-01' = {
   parent: sqlServer
   name: 'AllowAllAzureIps'
