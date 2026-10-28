@@ -1,4 +1,5 @@
-import { writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { dirname } from 'node:path';
 import { loadConfig } from './config';
 import { createPool } from './db/connection';
 import { introspect } from './db/introspect';
@@ -21,10 +22,12 @@ async function main(): Promise<void> {
     if (config.format === 'markdown') {
       const outputPath = config.outputPath.endsWith('.md')
         ? config.outputPath
-        : `${config.outputPath.replace(/\.[^.]+$/, '')}.md`;
+        : `${config.outputPath.replace(/\.[^./\\]+$/, '')}.md`;
+      await mkdir(dirname(outputPath), { recursive: true });
       await writeFile(outputPath, renderMarkdown(model), 'utf8');
       logger.info(`Wrote ${outputPath}`);
     } else {
+      await mkdir(dirname(config.outputPath), { recursive: true });
       await writeWorkbook(model, config.outputPath);
       logger.info(`Wrote ${config.outputPath}`);
     }

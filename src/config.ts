@@ -27,15 +27,21 @@ export function loadConfig(argv: string[]): Config {
   program.parse(argv);
   const options = program.opts();
 
-  const format = options.format === 'markdown' ? 'markdown' : 'excel';
+  if (options.format !== 'excel' && options.format !== 'markdown') {
+    throw new Error(`Invalid format "${options.format}". Expected "excel" or "markdown".`);
+  }
+  const port = Number(options.port);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw new Error(`Invalid port "${options.port}". Expected an integer between 1 and 65535.`);
+  }
 
   return {
     host: options.host,
-    port: Number(options.port),
+    port,
     user: options.user,
     password: options.password,
     database: options.database,
     outputPath: options.output,
-    format,
+    format: options.format,
   };
 }

@@ -14,21 +14,23 @@ const QUERIES = {
            c.scale AS scale, c.is_nullable AS isNullable, c.is_identity AS isIdentity,
            c.is_computed AS isComputed
     FROM sys.columns c
-    JOIN sys.types ty ON ty.user_type_id = c.user_type_id
+    JOIN sys.types ty ON ty.user_type_id = c.system_type_id
     JOIN sys.tables t ON t.object_id = c.object_id
     ORDER BY c.object_id, c.column_id;`,
 
   defaults: `
     SELECT dc.parent_object_id AS objectId, dc.parent_column_id AS columnId,
            dc.definition AS [definition]
-    FROM sys.default_constraints dc;`,
+    FROM sys.default_constraints dc
+    ORDER BY dc.parent_object_id, dc.parent_column_id;`,
 
   primaryKeys: `
     SELECT kc.parent_object_id AS objectId, ic.column_id AS columnId
     FROM sys.key_constraints kc
     JOIN sys.index_columns ic
       ON ic.object_id = kc.parent_object_id AND ic.index_id = kc.unique_index_id
-    WHERE kc.type = 'PK';`,
+    WHERE kc.type = 'PK'
+    ORDER BY kc.parent_object_id, ic.column_id;`,
 
   foreignKeys: `
     SELECT fk.parent_object_id AS objectId, fkc.parent_column_id AS columnId,
@@ -39,7 +41,8 @@ const QUERIES = {
     JOIN sys.tables rt ON rt.object_id = fk.referenced_object_id
     JOIN sys.schemas rs ON rs.schema_id = rt.schema_id
     JOIN sys.columns rc
-      ON rc.object_id = fkc.referenced_object_id AND rc.column_id = fkc.referenced_column_id;`,
+      ON rc.object_id = fkc.referenced_object_id AND rc.column_id = fkc.referenced_column_id
+    ORDER BY fk.parent_object_id, fkc.parent_column_id, fk.name;`,
 
   // class = 1 restricts to table/column properties; minor_id = 0 marks a table-level
   // description, minor_id > 0 maps to the column with that column_id.
@@ -47,7 +50,8 @@ const QUERIES = {
     SELECT ep.major_id AS majorId, ep.minor_id AS minorId,
            CAST(ep.value AS nvarchar(max)) AS [value]
     FROM sys.extended_properties ep
-    WHERE ep.name = 'MS_Description' AND ep.class = 1;`,
+    WHERE ep.name = 'MS_Description' AND ep.class = 1
+    ORDER BY ep.major_id, ep.minor_id;`,
 };
 
 export async function introspect(pool: sql.ConnectionPool): Promise<RawIntrospection> {

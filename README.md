@@ -6,16 +6,19 @@ identity and computed flags, defaults, and the descriptions stored as SQL Server
 properties. Markdown output is available too.
 
 The repository ships with the public **AdventureWorksLT** sample database, restored
-automatically, so `docker compose up` produces a real dictionary with zero setup.
+automatically, so `docker compose up` produces a real dictionary with zero setup. A
+pre-generated workbook is also committed at
+[`sample-output/AdventureWorksLT-data-dictionary.xlsx`](sample-output/AdventureWorksLT-data-dictionary.xlsx)
+so you can inspect the output directly.
 
-![CI](https://github.com/peemphetpimolzzz/sqlserver-data-dictionary/actions/workflows/ci.yml/badge.svg)
-![License: MIT](https://img.shields.io/badge/license-MIT-blue)
+[![CI](https://github.com/peemphetpimolzzz/sqlserver-data-dictionary/actions/workflows/ci.yml/badge.svg)](https://github.com/peemphetpimolzzz/sqlserver-data-dictionary/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ![Data dictionary](docs/screenshots/overview.png)
 
 ## What it captures
 
-- Tables grouped by schema, with an **Overview** index sheet that links to each table.
+- Tables grouped by schema, with an **Overview** index sheet summarizing every table.
 - Per column: ordinal, data type (e.g. `nvarchar(50)`, `decimal(18,2)`), nullability,
   primary key, foreign key target, identity, computed, default value.
 - Table and column **descriptions** read from `MS_Description` extended properties.
@@ -100,4 +103,4 @@ Both suites also run on every push via GitHub Actions.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) — Part of [Peem Phetpimol's portfolio](https://peemphetpimolzzz.github.io) (Fullstack & Cloud Engineer · Test Automation).
