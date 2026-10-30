@@ -5,6 +5,7 @@ import { createPool } from './db/connection';
 import { introspect } from './db/introspect';
 import { buildModel } from './model/mapper';
 import { writeWorkbook } from './output/excel';
+import { renderHtml } from './output/html';
 import { renderMarkdown } from './output/markdown';
 import { logger } from './util/logger';
 
@@ -25,6 +26,13 @@ async function main(): Promise<void> {
         : `${config.outputPath.replace(/\.[^./\\]+$/, '')}.md`;
       await mkdir(dirname(outputPath), { recursive: true });
       await writeFile(outputPath, renderMarkdown(model), 'utf8');
+      logger.info(`Wrote ${outputPath}`);
+    } else if (config.format === 'html') {
+      const outputPath = config.outputPath.endsWith('.html')
+        ? config.outputPath
+        : `${config.outputPath.replace(/\.[^./\\]+$/, '')}.html`;
+      await mkdir(dirname(outputPath), { recursive: true });
+      await writeFile(outputPath, renderHtml(model), 'utf8');
       logger.info(`Wrote ${outputPath}`);
     } else {
       await mkdir(dirname(config.outputPath), { recursive: true });

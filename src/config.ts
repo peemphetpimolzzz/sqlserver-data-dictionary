@@ -7,7 +7,7 @@ export interface Config {
   password: string;
   database: string;
   outputPath: string;
-  format: 'excel' | 'markdown';
+  format: 'excel' | 'markdown' | 'html';
 }
 
 export function loadConfig(argv: string[]): Config {
@@ -21,14 +21,14 @@ export function loadConfig(argv: string[]): Config {
     .option('--password <password>', 'SQL Server password', process.env.DB_PASSWORD ?? '')
     .option('--database <database>', 'Database to document', process.env.DB_NAME ?? 'AdventureWorksLT')
     .option('--output <path>', 'Output file path', process.env.OUTPUT_PATH ?? 'output/data-dictionary.xlsx')
-    .option('--format <format>', 'Output format: excel | markdown', process.env.OUTPUT_FORMAT ?? 'excel')
+    .option('--format <format>', 'Output format: excel | markdown | html', process.env.OUTPUT_FORMAT ?? 'excel')
     .allowExcessArguments(false);
 
   program.parse(argv);
   const options = program.opts();
 
-  if (options.format !== 'excel' && options.format !== 'markdown') {
-    throw new Error(`Invalid format "${options.format}". Expected "excel" or "markdown".`);
+  if (options.format !== 'excel' && options.format !== 'markdown' && options.format !== 'html') {
+    throw new Error(`Invalid format "${options.format}". Expected "excel", "markdown", or "html".`);
   }
   const port = Number(options.port);
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
